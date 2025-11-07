@@ -1,0 +1,111 @@
+k = 10;  % variable range 
+n = 100;  % number of variables 
+x = ceil(k*rand(1,n)); 
+y = ceil(k*rand(1,n)); 
+1. ENTROPY  
+function z = entropy(x) 
+% Compute entropy z=H(x) of a discrete variable x. 
+% Input: 
+%   x: a integer vectors   
+% Output: 
+%   z: entropy z=H(x) 
+n = numel(x); 
+[u,~,x] = unique(x); 
+k = numel(u); 
+idx = 1:n; 
+Mx = sparse(idx,x,1,n,k,n); 
+Px = nonzeros(mean(Mx,1)); 
+Hx = -dot(Px,log2(Px)); 
+z = max(0,Hx); 
+end 
+%% Entropy H(x), H(y) 
+Hx = entropy(x); 
+Hy = entropy(y); 
+OUTPUT: - 
+Hx = 3.2122 
+Hy = 3.2093 
+2. JOINT ENTROPY  
+function z = jointEntropy(x, y) 
+% Compute joint entropy z=H(x,y) of two discrete variables x and y. 
+% Input: 
+%   x, y: two integer vector of the same length  
+% Output: 
+%   z: joint entroy z=H(x,y)    
+assert(numel(x) == numel(y)); 
+n = numel(x); 
+x = reshape(x,1,n); 
+y = reshape(y,1,n); 
+l = min(min(x),min(y)); 
+x = x-l+1; 
+y = y-l+1; 
+k = max(max(x),max(y)); 
+idx = 1:n; 
+p = nonzeros(sparse(idx,x,1,n,k,n)'*sparse(idx,y,1,n,k,n)/n); %joint distribution of x and y 
+z = -dot(p,log2(p)); 
+z = max(0,z); 
+end 
+%% Joint entropy H(x,y) 
+Hxy = jointEntropy(x,y); 
+OUTPUT: - 
+Hxy = 5.762 
+3. CONDITIONAL ENTROPY  
+function z = condEntropy (x, y) 
+% Compute conditional entropy z=H(x|y) of two discrete variables x and y. 
+% Input: 
+%   x, y: two integer vector of the same length  
+% Output: 
+%   z: conditional entropy z=H(x|y) 
+assert(numel(x) == numel(y)); 
+n = numel(x); 
+x = reshape(x,1,n); 
+y = reshape(y,1,n); 
+l = min(min(x),min(y)); 
+x = x-l+1; 
+y = y-l+1; 
+k = max(max(x),max(y)); 
+idx = 1:n; 
+Mx = sparse(idx,x,1,n,k,n); 
+My = sparse(idx,y,1,n,k,n); 
+Pxy = nonzeros(Mx'*My/n); %joint distribution of x and y 
+Hxy = -dot(Pxy,log2(Pxy)); 
+Py = nonzeros(mean(My,1)); 
+Hy = -dot(Py,log2(Py)); 
+% conditional entropy H(x|y) 
+z = Hxy-Hy; 
+z = max(0,z); 
+end 
+%% Conditional entropy H(x|y) 
+Hx_y = condEntropy(x,y); 
+OUTPUT: - 
+Hx_y = 2.5532 
+4. MUTUAL INFORMATION  
+function z = condEntropy (x, y) 
+% Compute conditional entropy z=H(x|y) of two discrete variables x and y. 
+% Input: 
+%   x, y: two integer vector of the same length  
+% Output: 
+%   z: conditional entropy z=H(x|y) 
+assert(numel(x) == numel(y)); 
+n = numel(x); 
+x = reshape(x,1,n); 
+y = reshape(y,1,n); 
+l = min(min(x),min(y)); 
+x = x-l+1; 
+y = y-l+1; 
+k = max(max(x),max(y)); 
+idx = 1:n; 
+Mx = sparse(idx,x,1,n,k,n); 
+My = sparse(idx,y,1,n,k,n); 
+Pxy = nonzeros(Mx'*My/n); %joint distribution of x and y 
+Hxy = -dot(Pxy,log2(Pxy)); 
+Py = nonzeros(mean(My,1)); 
+Hy = -dot(Py,log2(Py)); 
+% conditional entropy H(x|y) 
+z = Hxy-Hy; 
+z = max(0,z); 
+end 
+%% Mutual information I(x,y) 
+Ixy = mutInfo(x,y); 
+OUTPUT: - 
+Ixy = 0.6590 
+s
