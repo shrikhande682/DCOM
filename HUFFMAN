@@ -1,0 +1,68 @@
+% Huffman coding in Octave with Python-style output + entropy/efficiency 
+text = 'huffman coding example'; 
+% --- frequency count --- 
+chars = unique(text); 
+freqs = arrayfun(@(c) sum(text==c), chars); 
+probs = freqs / sum(freqs); 
+% --- make nodes {symbol,freq,left,right} --- 
+nodes = {}; 
+for i=1:length(chars) 
+nodes{end+1} = {chars(i), freqs(i), [], []}; 
+end 
+% --- build Huffman tree --- 
+while numel(nodes) > 1 
+[~, idx] = sort(cellfun(@(n) n{2}, nodes)); 
+nodes = nodes(idx); 
+left = nodes{1}; right = nodes{2}; 
+merged = {[], left{2}+right{2}, left, right}; 
+nodes(1:2) = []; 
+nodes{end+1} = merged; 
+end 
+root = nodes{1}; 
+% --- recursive code generation --- 
+function codes = gen_codes(node, prefix, codes) 
+if isempty(node{3}) && isempty(node{4}) 
+codes(char(node{1})) = prefix; 
+else 
+codes = gen_codes(node{3}, [prefix '0'], codes); 
+codes = gen_codes(node{4}, [prefix '1'], codes); 
+end 
+end 
+codes = containers.Map(); 
+codes = gen_codes(root, '', codes); 
+% --- print dictionary --- 
+keys = codes.keys; 
+fprintf('Huffman Codes: {'); 
+for i = 1:numel(keys) 
+fprintf('''%s'': ''%s''', keys{i}, codes(keys{i})); 
+if i < numel(keys) 
+fprintf(', '); 
+end 
+end 
+fprintf('}\n'); 
+% --- entropy --- 
+entropy = -sum(probs .* log2(probs)); 
+% --- average code length --- 
+avg_len = 0; 
+for i=1:numel(keys) 
+sym = keys{i}; 
+p = probs(chars==sym); 
+avg_len += p * length(codes(sym)); 
+end 
+% --- efficiency --- 
+eff = entropy / avg_len; 
+total_bits = avg_len * length(text); 
+% --- print results --- 
+fprintf('Entropy (H): %.4f bits/symbol\n', entropy); 
+fprintf('Average code length (L): %.4f bits/symbol\n', avg_len); 
+fprintf('Efficiency (H/L): %.2f%%\n', eff*100); 
+fprintf('Total bits for message: %d bits\n', round(total_bits)); 
+OUTPUT: - 
+Huffman Codes: {' ': '1010', 'a': '1011', 'c': '0000', 'd': 
+'0001', 'e': '1100', 'f': '1101', 'g': '0010', 'h': '0011', 
+'i': '0100', 'l': '0101', 'm': '1110', 'n': '1111', 'o': 
+'0110', 'p': '0111', 'u': '1000', 'x': '1001' 
+Entropy (H): 3.9140 bits/symbol 
+Average code length (L): 4.0000 bits/symbol 
+Efficiency (H/L): 97.85% 
+Total bits for message: 88 bits
