@@ -1,0 +1,17 @@
+#include<P18f4520.h>
+#include<stdio.h>
+
+#pragma config OSC = HS	// High-speed oscillator 
+#pragma config WDT = OFF		// Watchdog Timer disabled
+#pragma config LVP = OFF	// Low-voltage Programming disabled
+
+unsigned char arr1[] = "TE E&TC"; 
+unsigned char arr2[] = "GES RHSapat CoE";
+
+#define RC2BITMASK      	0x04				//D4
+#define SET_RC2()      		(LATC |= RC2BITMASK) 
+#define CLR_RC2()		(LATC &=~(RC2BITMASK))
+
+#define RE0BITMASK		0x01				//D5
+#define SET_RE0()		(LATE |= RE0BITMASK)
+#define CLR_RE0()		(LATE 
