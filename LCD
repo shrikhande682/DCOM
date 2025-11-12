@@ -1,0 +1,15 @@
+#define RE1BITMASK		0x02				//D6
+#define SET_RE1()		(LATE |= RE1BITMASK)
+#define CLR_RE1()		(LATE &=~(RE1BITMASK))
+
+#define RE2BITMASK		0x04				//D7
+#define SET_RE2()		(LATE |= RE2BITMASK)
+#define CLR_RE2()		(LATE &=~(RE2BITMASK))
+
+#define RC0BITMASK		0x01				//LCD_RS
+#define SET_RC0()		(LATC |= RC0BITMASK)
+#define CLR_RC0()		(LATC &=~(RC0BITMASK))
+
+#define RC1BITMASK		0x02				//LCD_EN
+#define SET_RC1()		(LATC |= RC1BITMASK)
+#define CLR_RC1()       	(LATC &=~(RC1BITMASK))
