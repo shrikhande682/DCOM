@@ -1,0 +1,20 @@
+#include <P18f4520.h>
+
+#pragma config OSC = HS // High-speed oscillator
+#pragma config WDT = OFF // Watchdog Timer disabled
+#pragma config LVP = OFF // Low-voltage Programming disabled
+#pragma config PBADEN = OFF
+
+unsigned char TimerOnflag=0;
+void Timer0Init()
+{
+    T0CONbits.T0PS0 = 1; // Prescaler of 2
+    T0CONbits.T0PS1 = 1; // Prescaler of 2
+    T0CONbits.T0PS2 = 0; // Prescaler of 2
+    T0CONbits.PSA = 0; // Timer Prescaler assigned
+    T0CONbits.T0SE = 0; // Increment on low to high transition
+    T0CONbits.T0CS = 0; // Internal clock
+    T0CONbits.T08BIT = 0; // 16 BIT MODE
+    T0CONbits.TMR0ON = 1; // Turns timer on
+    TMR0H =0x00;
+    TMR0L = 0x00;
